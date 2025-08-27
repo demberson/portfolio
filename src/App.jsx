@@ -1,10 +1,14 @@
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import './styles/App.css';
 
 function App() {
   return (
-    <header className="site-header">
-      <h1 className="portfolio-title">Dillon Emberson</h1>
-    </header>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
