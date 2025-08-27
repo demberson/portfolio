@@ -2,36 +2,15 @@ body {
   margin: 0;
   background-color: #1a1a1a;
   font-family: 'Roboto', sans-serif;
-  display: flex;
-  justify-content: center;
   min-height: 100vh;
 }
 
-.site-header {
-  padding: 20px;
+main {
+  padding-top: 80px;
+  color: #fff;
+  text-align: center;
   display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.portfolio-title {
-  margin: 0;
-  color: #fff;
-  font-size: 9rem;
-  font-weight: 700;
-  transition: text-shadow 0.5s ease-in-out, color 0.5s ease-in-out;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
-
-}
-
-.portfolio-title:hover {
-  color: #fff;
-  text-shadow:
-    0 0 5px rgba(255, 255, 255, 1),
-    0 0 10px rgba(255, 255, 255, 0.8),
-    0 0 20px rgba(255, 235, 153, 0.7),
-    0 0 30px rgba(255, 204, 0, 0.6),
-    0 0 50px rgba(255, 153, 0, 0.5),
-    0 0 80px rgba(255, 102, 0, 0.4),
-    0 0 120px rgba(255, 51, 0, 0.3);
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 80px);
 }
