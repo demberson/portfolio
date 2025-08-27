@@ -1,42 +1,37 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  margin: 0;
+  background-color: #1a1a1a;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.site-header {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.portfolio-title {
+  margin: 0;
+  color: #fff;
+  font-size: 9rem;
+  font-weight: 700;
+  transition: text-shadow 0.5s ease-in-out, color 0.5s ease-in-out;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.portfolio-title:hover {
+  color: #fff;
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 1),
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 235, 153, 0.7),
+    0 0 30px rgba(255, 204, 0, 0.6),
+    0 0 50px rgba(255, 153, 0, 0.5),
+    0 0 80px rgba(255, 102, 0, 0.4),
+    0 0 120px rgba(255, 51, 0, 0.3);
 }

@@ -1,11 +1,11 @@
-import './App.css'
+import './App.css';
+
 function App() {
   return (
-    <div>
-      <h1>Dillon Emberson</h1>
-      {}
-    </div>
-  )
+    <header className="site-header">
+      <h1 className="portfolio-title">Dillon Emberson</h1>
+    </header>
+  );
 }
 
-export default App
+export default App;
