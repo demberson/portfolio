@@ -8,5 +8,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2"
-image = { version = "0.24", default-features = false, features = ["gif", "jpeg", "png"] }
 console_error_panic_hook = "0.1.7"
+image = { version = "0.24.7", default-features = false, features = ["gif", "jpeg", "png"] }
