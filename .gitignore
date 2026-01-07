@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Rust Build Files
+target/
+**/*.rs.bk
+wasm-lib/pkg/
