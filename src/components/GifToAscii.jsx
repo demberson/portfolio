@@ -107,7 +107,7 @@ const GifToAscii = () => {
                     color: 'black',
                     backgroundColor: 'white',
                     display: 'inline-block',
-                    padding: '10px'
+                    padding: '1px'
                 }}>
                     {frames[currentFrameIndex]}
                 </div>
