@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import p5 from 'p5';
 
 const EggCanvas = ({ gameState, onLoss, onWin}) => {
     const renderRef = useRef(); // refer to HTML div where canvas is
@@ -12,6 +11,8 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
 
     useEffect(() => {
         const sketch = (p) => {
+
+            //variables
             let angle = 0;
             let velocity = 0;
             let drop = 0;
@@ -26,9 +27,11 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 p.textSize(20);
 
                 // initialize mic
-                //mic = new p.AudioIn();
-                //mic.start();
+                mic = new window.p5.AudioIn();
+                mic.start();
             };
+
+            
 
             // draws 60 times per second
             p.draw = () => {
@@ -60,9 +63,9 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 // game loop
                 drawScene(p, (angle += velocity));
 
-                velocity = 0;
+                velocity = .05;
 
-                if(angle > 1.57 || angle < -.157) {
+                if(angle > 1.7 || angle < -1.7) {
                     velocity = 0;
                     drop += 2;
                 }
@@ -80,31 +83,24 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 p.line(0, 0, 0, 190);
 
                 // draw egg
-                p.translate(0, drop); // egg falls
+                p.translate(0, drop); // if egg falls
                 p.rotate(angle);
-                p.translate(0, -20);
+                p.translate(0, -20); // move axis to bottom of egg
                 p.stroke(0);
                 p.strokeWeight(1);
-                p.fill(255, 248, 190);
+                p.fill(255, 248, 190); // egg color
                 
-                p.beginShape();
+                p.beginShape(); // egg shape
                 p.vertex(0,-15);
-                p.bezierOrder(3);
-                
-                p.bezierVertex(10, -15); 
-                p.bezierVertex(25, 20);
-                p.bezierVertex(0, 20);
-
-                p.bezierVertex(-25, 20);
-                p.bezierVertex(-10, -15);
-                p.bezierVertex(0, -15);
+                p.bezierVertex(10, -15, 25, 20, 0, 20);
+                p.bezierVertex(-25, 20, -10, -15, 0, -15);
                 p.endShape();
 
                 p.pop();
             };
         };
 
-        const p5Instance = new p5(sketch, renderRef.current);
+        const p5Instance = new window.p5(sketch, renderRef.current);
 
         return () => {
             p5Instance.remove();
