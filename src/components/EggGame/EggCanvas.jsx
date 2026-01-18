@@ -15,14 +15,17 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             //variables
             let angle = 0;
             let velocity = 0;
+            let blowDirection = 1;
             let drop = 0;
             let mic;
             let startTime = 0;
             let gameActive = false;
 
             // constants
-            let gravity = 0.0005;
+            let gravity = 0.00017;
             let maxAngle = 1.7;
+            let blowVelocity = 0.00023;
+            let timeLimit = 30;
 
             // runs once at start
             p.setup = () => {
@@ -52,14 +55,14 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (!gameActive) {
                     startTime = p.millis();
                     angle = 0;
-                    velocity = 0.00; // testing
+                    velocity = (p.random([1, -1])) * gravity;
                     drop = 0;
                     gameActive = true;
                 }
 
                 // timer
                 let elapsed = (p.millis() - startTime) / 1000;
-                let timeLeft = Math.max(0, 20 - elapsed);
+                let timeLeft = Math.max(0, timeLimit - elapsed);
                 p.fill(0);
                 p.noStroke();
                 p.text(`${timeLeft.toFixed(0)}`, 200, 50);
@@ -70,6 +73,17 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 // "gravity"
                 if (angle > 0 || angle < 0) {
                     velocity += (angle * gravity);
+                }
+
+                // player controls
+                if (p.keyIsDown(p.LEFT_ARROW)) {
+                    blowDirection = 1;
+                }
+                if (p.keyIsDown(p.RIGHT_ARROW)) {
+                    blowDirection = -1;
+                }
+                if(p.keyIsDown(32)) { // SPACEBAR
+                    velocity += (blowVelocity * blowDirection);
                 }
 
                 // win condition
@@ -100,7 +114,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 // draw egg
                 p.translate(0, drop); // if egg falls
                 p.rotate(angle);
-                p.translate(0, -20); // move axis to bottom of egg
+                p.translate(0, -20); // move axis (entire canvas) to bottom of egg
                 p.stroke(0);
                 p.strokeWeight(1);
                 p.fill(255, 248, 190); // egg color
