@@ -20,6 +20,10 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let startTime = 0;
             let gameActive = false;
 
+            // constants
+            let gravity = 0.0005;
+            let maxAngle = 1.7;
+
             // runs once at start
             p.setup = () => {
                 p.createCanvas(400, 250);
@@ -48,7 +52,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (!gameActive) {
                     startTime = p.millis();
                     angle = 0;
-                    velocity = 0;
+                    velocity = 0.00; // testing
                     drop = 0;
                     gameActive = true;
                 }
@@ -63,13 +67,24 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 // game loop
                 drawScene(p, (angle += velocity));
 
-                velocity = .05;
-
-                if(angle > 1.7 || angle < -1.7) {
-                    velocity = 0;
-                    drop += 2;
+                // "gravity"
+                if (angle > 0 || angle < 0) {
+                    velocity += (angle * gravity);
                 }
 
+                // win condition
+                if(timeLeft == 0) {
+                    onWin(timeLeft);
+                }
+
+                // lose condition
+                if(angle > maxAngle || angle < -maxAngle) {
+                    velocity = 0;
+                    drop += (drop * (gravity + .13) + 1);
+                    if(drop > 150) {
+                        onLoss(timeLeft);
+                    }
+                }
                 
             };
 

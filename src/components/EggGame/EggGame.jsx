@@ -48,7 +48,7 @@ const EggGame = () => {
 
             {gameState === 'GAME_OVER' && (
                 <div className="overlay">
-                    <h2>test text</h2>
+                    <h2>game over</h2>
                     <button onClick={handleStart}>Retry</button>
                 </div>
             )}
