@@ -27,6 +27,7 @@ const EggGame = () => {
     };
 
     return (
+        
         <div className="egg-game-wrapper" style={{ position: 'relative', width: '400px', height: '250px' }}>
 
             {/* game engine */}
@@ -39,9 +40,6 @@ const EggGame = () => {
             {/* ui */}
             {gameState === 'MENU' && (
                 <div className="overlay">
-                    <h1>balance the egg</h1>
-                    <p>use your microphone to blow on the egg</p>
-                    <p>left and right arrow keys change what side you blow from</p>
                     <button onClick={handleStart}>Start</button>
                 </div>
             )}

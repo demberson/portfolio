@@ -17,14 +17,15 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let velocity = 0;
             let blowDirection = 1;
             let drop = 0;
+            let initialPush = 0;
             let mic;
             let startTime = 0;
             let gameActive = false;
 
             // constants
-            let gravity = 0.00017;
+            let gravity = 0.0001;
             let maxAngle = 1.7;
-            let blowVelocity = 0.00023;
+            let blowVelocity = 0.00015;
             let timeLimit = 30;
 
             // runs once at start
@@ -55,7 +56,8 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (!gameActive) {
                     startTime = p.millis();
                     angle = 0;
-                    velocity = (p.random([1, -1])) * gravity;
+                    initialPush = (p.random([1, -1])) * (gravity * 2);
+                    velocity = initialPush + gravity;
                     drop = 0;
                     gameActive = true;
                 }
@@ -82,8 +84,14 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (p.keyIsDown(p.RIGHT_ARROW)) {
                     blowDirection = -1;
                 }
-                if(p.keyIsDown(32)) { // SPACEBAR
+                if (p.keyIsDown(32)) { // spacebar
                     velocity += (blowVelocity * blowDirection);
+                }
+                if (mic) {
+                    let vol = mic.getLevel();
+                    if (vol > 0.1) {
+                        velocity += (blowVelocity * blowDirection);
+                    }
                 }
 
                 // win condition
@@ -93,9 +101,9 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
 
                 // lose condition
                 if(angle > maxAngle || angle < -maxAngle) {
-                    velocity = 0;
-                    drop += (drop * (gravity + .13) + 1);
-                    if(drop > 150) {
+                    velocity = 0; //CHANGE FALL ANGLE TO NOT BE STRAIGHT DOWN
+                    drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
+                    if(drop > 150) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
                     }
                 }
@@ -104,15 +112,16 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
 
             const drawScene = (p, angle) => {
                 p.push();
+
                 p.translate(p.width / 2, p.height / 2 - 10);
 
-                // draw wall and floor
+                // draw wall
                 p.stroke(0);
                 p.strokeWeight(5); // wall thickness
                 p.line(0, 0, 0, 190);
 
                 // draw egg
-                p.translate(0, drop); // if egg falls
+                p.translate(velocity, drop); // if egg falls
                 p.rotate(angle);
                 p.translate(0, -20); // move axis (entire canvas) to bottom of egg
                 p.stroke(0);
@@ -125,7 +134,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 p.bezierVertex(-25, 20, -10, -15, 0, -15);
                 p.endShape();
 
-                p.pop();
+                p.pop(); // allows moving just the egg instead of entire canvas
             };
         };
 
