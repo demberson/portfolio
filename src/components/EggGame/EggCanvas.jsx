@@ -29,12 +29,12 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let spacebarLock = false;
 
             // constants
+            let blowVelocity = 0.00015;
             let gravity = 0.0001;
             let maxAngle = 1.7;
             let lipsWidth = 168;
             let lipsHeight = 81;
-            let blowVelocity = 0.00015;
-            let timeLimit = 30;
+            let timeLimit = 20;
 
             // preload assets
             p.preload = () => {
@@ -42,6 +42,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 lipsL2 = p.loadImage('/assets/lipsL2.png');
                 lipsR1 = p.loadImage('/assets/lipsR1.png');
                 lipsR2 = p.loadImage('/assets/lipsR2.png');
+                
                 blowSounds[0] = p.loadSound('/assets/blow1.mp3');
                 blowSounds[1] = p.loadSound('/assets/blow2.mp3');
                 blowSounds[2] = p.loadSound('/assets/blow3.mp3');
@@ -79,7 +80,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (!gameActive) {
                     startTime = p.millis();
                     angle = 0;
-                    initialPush = (p.random([1, -1])) * (gravity * 2);
+                    initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
                     velocity = initialPush + gravity;
                     drop = 0;
                     gameActive = true;
@@ -113,7 +114,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                     isBlowing = true;
 
                     // play blowing SFX if not using mic
-                    if (spacebarLock === false) {
+                    if (spacebarLock === false) { // only play one sound each spacebar press
                         let isSoundActive = blowSounds.some(s => s.isPlaying());
                         if(!isSoundActive) {
                             let randomSound = p.random(blowSounds);
@@ -128,21 +129,21 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 }
                 if (mic) {
                     let vol = mic.getLevel();
-                    if (vol > 0.2) {
+                    if (vol > 0.15) {
                         velocity += (blowVelocity * blowDirection);
                         isBlowing = true;
                     }
                 }
 
                 // draw lips
-                if (blowDirection == 1) {
+                if (blowDirection == 1) { // left side
                     if (isBlowing) {
                         p.image(lipsL2, 0, (p.height / 4), lipsWidth, lipsHeight);
                     } else {
                         p.image(lipsL1, 0, (p.height / 4), lipsWidth, lipsHeight);
                     }
                 }
-                if (blowDirection == -1) {
+                if (blowDirection == -1) { // right side
                     if (isBlowing) {
                         p.image(lipsR2, p.width - lipsWidth, (p.height / 4), lipsWidth, lipsHeight);
                     } else {
@@ -162,13 +163,20 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if(angle > maxAngle || angle < -maxAngle) {
                     velocity = 0; //CHANGE FALL ANGLE TO NOT BE STRAIGHT DOWN
                     drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
-                    if(drop > 150) { //REPLACE MAGIC NUM
+                    if(drop > 170) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
                         crackSound.setVolume(0.3);
                         crackSound.play();
                     }
                 }
                 
+            };
+
+            // prevent normal browser controls from interfering
+            p.keyPressed = () => {
+                if (p.keyCode === p.LEFT_ARROW || p.keyCode === p.RIGHT_ARROW || p.keyCode === 32) {
+                    return false;
+                }
             };
 
             const drawScene = (p, angle) => {

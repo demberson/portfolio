@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EggCanvas from './EggCanvas';
+
 import './EggGame.css';
 
 const EggGame = () => {
     // game states
     const [gameState, setGameState] = useState('MENU');
-
     const [finalTime, setFinalTime] = useState(0);
+    const [isHardMode, setIsHardMode] = useState(false);
+
+    // preload image
+    useEffect(() => {
+        const img = new Image();
+        img.src = "/assets/fell-off.png";
+    }, []);
 
     // handlers
     const handleStart = () => {
@@ -35,12 +42,15 @@ const EggGame = () => {
                 gameState={gameState}
                 onLoss={handleLoss}
                 onWin={handleWin}
+                isHardMode={isHardMode}
             />
 
             {/* ui */}
             {gameState === 'MENU' && (
                 <div className="overlay">
                     <button onClick={handleStart}>Start</button>
+
+                    
                 </div>
             )}
 
@@ -53,9 +63,33 @@ const EggGame = () => {
 
             {gameState === 'VICTORY' && (
                 <div className="overlay">
-                    <h1>SOMEONE TOLD ME I FELL OFF</h1>
+                    <img
+                        src="/assets/fell-off.png"
+                        alt="someone told me i fell off"
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            zIndex: 0, // put behind button
+                            opacity: 0.8
+                        }}
+                    />
                     <button onClick={handleStart}>Play Again</button>
                 </div>
+            )}
+
+            {gameState !== 'PLAYING' && (
+                <div className="hard-mode-toggle">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={isHardMode}
+                                onChange={(e) => setIsHardMode(e.target.checked)}
+                                />
+                                hard mode
+                        </label>
+                    </div>
             )}
         </div>
     );

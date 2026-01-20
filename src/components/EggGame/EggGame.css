@@ -29,7 +29,7 @@
 }
 
 .overlay button {
-    padding: 10px 10px;
+    padding: 1px 5px;
     font-size: 1.2rem;
     cursor: pointer;
     background-color: white;
@@ -37,4 +37,27 @@
     border: none;
     border-radius: 4px;
     margin-top: 15px;
+    z-index: 10;
+}
+
+.hard-mode-toggle {
+    position: absolute;
+    bottom: 8px;
+    right: 8 px;
+
+    font-size: 0.8rem;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    z-index: 20;
+}
+
+.hard-mode-toggle:hover {
+    opacity: 1.0;
+}
+
+.hard-mode-toggle label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
