@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
+
 const EggCanvas = ({ gameState, onLoss, onWin}) => {
     const renderRef = useRef(); // refer to HTML div where canvas is
     const gameStateRef = useRef(gameState); // allow p5 to see current React state
@@ -21,12 +22,24 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let mic;
             let startTime = 0;
             let gameActive = false;
+            let lipsL1, lipsL2, lipsR1, lipsR2;
+            let lipsWidth = 168;
+            let lipsHeight = 81;
+            let isBlowing = false;
 
             // constants
             let gravity = 0.0001;
             let maxAngle = 1.7;
             let blowVelocity = 0.00015;
             let timeLimit = 30;
+
+            // preload assets
+            p.preload = () => {
+                lipsL1 = p.loadImage('/assets/lipsL1.png');
+                lipsL2 = p.loadImage('/assets/lipsL2.png');
+                lipsR1 = p.loadImage('/assets/lipsR1.png');
+                lipsR2 = p.loadImage('/assets/lipsR2.png');
+            };
 
             // runs once at start
             p.setup = () => {
@@ -69,8 +82,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 p.noStroke();
                 p.text(`${timeLeft.toFixed(0)}`, 200, 50);
 
-                // game loop
-                drawScene(p, (angle += velocity));
+                
 
                 // "gravity"
                 if (angle > 0 || angle < 0) {
@@ -78,6 +90,8 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 }
 
                 // player controls
+                isBlowing = false;
+                
                 if (p.keyIsDown(p.LEFT_ARROW)) {
                     blowDirection = 1;
                 }
@@ -86,13 +100,35 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 }
                 if (p.keyIsDown(32)) { // spacebar
                     velocity += (blowVelocity * blowDirection);
+                    isBlowing = true;
                 }
                 if (mic) {
                     let vol = mic.getLevel();
                     if (vol > 0.1) {
                         velocity += (blowVelocity * blowDirection);
+                        isBlowing = true;
                     }
                 }
+
+                // draw lips
+                if (blowDirection == 1) {
+                    if (isBlowing) {
+                        p.image(lipsL2, 0, (p.height / 4), lipsWidth, lipsHeight);
+                    } else {
+                        p.image(lipsL1, 0, (p.height / 4), lipsWidth, lipsHeight);
+                    }
+                }
+                if (blowDirection == -1) {
+                    if (isBlowing) {
+                        p.image(lipsR2, p.width - lipsWidth, (p.height / 4), lipsWidth, lipsHeight);
+                    } else {
+                        p.image(lipsR1, p.width - lipsWidth, (p.height / 4), lipsWidth, lipsHeight);
+                    }
+                }
+                
+
+                // game loop
+                drawScene(p, (angle += velocity));
 
                 // win condition
                 if(timeLeft == 0) {
