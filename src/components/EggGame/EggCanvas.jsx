@@ -23,13 +23,16 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let startTime = 0;
             let gameActive = false;
             let lipsL1, lipsL2, lipsR1, lipsR2;
-            let lipsWidth = 168;
-            let lipsHeight = 81;
             let isBlowing = false;
+            let blowSounds = [];
+            let crackSound;
+            let spacebarLock = false;
 
             // constants
             let gravity = 0.0001;
             let maxAngle = 1.7;
+            let lipsWidth = 168;
+            let lipsHeight = 81;
             let blowVelocity = 0.00015;
             let timeLimit = 30;
 
@@ -39,6 +42,13 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 lipsL2 = p.loadImage('/assets/lipsL2.png');
                 lipsR1 = p.loadImage('/assets/lipsR1.png');
                 lipsR2 = p.loadImage('/assets/lipsR2.png');
+                blowSounds[0] = p.loadSound('/assets/blow1.mp3');
+                blowSounds[1] = p.loadSound('/assets/blow2.mp3');
+                blowSounds[2] = p.loadSound('/assets/blow3.mp3');
+                blowSounds[3] = p.loadSound('/assets/blow4.mp3');
+                blowSounds[4] = p.loadSound('/assets/blow5.mp3');
+                blowSounds[5] = p.loadSound('/assets/blow6.mp3');
+                crackSound = p.loadSound('/assets/crack.mp3');
             };
 
             // runs once at start
@@ -91,7 +101,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
 
                 // player controls
                 isBlowing = false;
-                
+
                 if (p.keyIsDown(p.LEFT_ARROW)) {
                     blowDirection = 1;
                 }
@@ -101,10 +111,24 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 if (p.keyIsDown(32)) { // spacebar
                     velocity += (blowVelocity * blowDirection);
                     isBlowing = true;
+
+                    // play blowing SFX if not using mic
+                    if (spacebarLock === false) {
+                        let isSoundActive = blowSounds.some(s => s.isPlaying());
+                        if(!isSoundActive) {
+                            let randomSound = p.random(blowSounds);
+                            randomSound.setVolume(0.2);
+                            randomSound.play();
+                        }
+                        spacebarLock = true;
+                    }
+                }
+                else {
+                    spacebarLock = false;
                 }
                 if (mic) {
                     let vol = mic.getLevel();
-                    if (vol > 0.1) {
+                    if (vol > 0.2) {
                         velocity += (blowVelocity * blowDirection);
                         isBlowing = true;
                     }
@@ -126,7 +150,6 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                     }
                 }
                 
-
                 // game loop
                 drawScene(p, (angle += velocity));
 
@@ -141,6 +164,8 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                     drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
                     if(drop > 150) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
+                        crackSound.setVolume(0.3);
+                        crackSound.play();
                     }
                 }
                 
