@@ -86,6 +86,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 // startup
                 if (!gameActive) {
                     startTime = p.millis();
+                    timeLimit = 20;
                     angle = 0;
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
                     velocity = initialPush + gravity;
@@ -196,7 +197,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
                 
                 // render game
-                drawScene(p, (angle += velocity));
+                drawScene(p, (angle += velocity), timeLeft);
 
                 p.pop();
 
@@ -242,7 +243,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
             };
 
-            const drawScene = (p, angle) => {
+            const drawScene = (p, angle, timeLeft) => {
                 p.push();
 
                 p.translate(p.width / 2, p.height / 2 - 10);
@@ -266,8 +267,23 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 p.bezierVertex(-25, 20, -10, -15, 0, -15);
                 p.endShape();
 
-                // hardmode egg cracks
-                
+                // hardmode egg crack
+                if (hardModeRef.current && timeLeft !== undefined) {
+                    p.push(); 
+                    p.noFill();
+                    p.strokeWeight(0.3);
+                    p.stroke(0);
+
+                    if (timeLeft <= 20) {
+                        p.beginShape();
+                        p.vertex(12, 10);  
+                        p.vertex(5, 15);   
+                        p.vertex(8, 5);    
+                        p.vertex(1, 1);   
+                        p.endShape();
+                    }
+                    p.pop();
+                }
 
                 p.pop(); // allows moving just the egg instead of entire canvas
             };
