@@ -1,19 +1,27 @@
 import React, { useEffect, useRef } from 'react';
 
 
-const EggCanvas = ({ gameState, onLoss, onWin}) => {
+const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
     const renderRef = useRef(); // refer to HTML div where canvas is
     const gameStateRef = useRef(gameState); // allow p5 to see current React state
+    const hardModeRef = useRef(isHardMode);
 
-    // sync state
+    // sync game state
     useEffect(() => {
         gameStateRef.current = gameState;
     }, [gameState]);
 
     useEffect(() => {
+        hardModeRef.current = isHardMode;
+    }, [isHardMode]);
+
+    useEffect(() => {
         const sketch = (p) => {
 
             //variables
+            let timeLimit = 20;
+            let blowVelocity = 0.00015;
+            let gravity = 0.0001;
             let angle = 0;
             let velocity = 0;
             let blowDirection = 1;
@@ -27,14 +35,14 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
             let blowSounds = [];
             let crackSound;
             let spacebarLock = false;
+            let hardModeSong;
 
             // constants
-            let blowVelocity = 0.00015;
-            let gravity = 0.0001;
             let maxAngle = 1.7;
             let lipsWidth = 168;
             let lipsHeight = 81;
-            let timeLimit = 20;
+            let timeTilFlash = 7.8;
+            let timeTilShake = 90;
 
             // preload assets
             p.preload = () => {
@@ -50,6 +58,7 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 blowSounds[4] = p.loadSound('/assets/blow5.mp3');
                 blowSounds[5] = p.loadSound('/assets/blow6.mp3');
                 crackSound = p.loadSound('/assets/crack.mp3');
+                hardModeSong = p.loadSound('/assets/hardmode.mp3');
             };
 
             // runs once at start
@@ -62,8 +71,6 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 mic = new window.p5.AudioIn();
                 mic.start();
             };
-
-            
 
             // draws 60 times per second
             p.draw = () => {
@@ -83,6 +90,27 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
                     velocity = initialPush + gravity;
                     drop = 0;
+
+                    // hardmode settings
+                    if (hardModeRef.current === true) {
+                        blowVelocity = 0.00023;
+                        gravity = 0.0002;
+
+                        if (hardModeSong) {
+                            hardModeSong.setVolume(0.06);
+                            hardModeSong.play();
+                            
+                            timeLimit = hardModeSong.duration() - 12; // match game duration with song duration
+                        }
+                    } else {
+                        blowVelocity = 0.00015;
+                        gravity = 0.0001;
+
+                        if (hardModeSong && hardModeSong.isPlaying()) {
+                            hardModeSong.stop();
+                        }
+                    }
+
                     gameActive = true;
                 }
 
@@ -91,9 +119,13 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 let timeLeft = Math.max(0, timeLimit - elapsed);
                 p.fill(0);
                 p.noStroke();
-                p.text(`${timeLeft.toFixed(0)}`, 200, 50);
-
-                
+                if (hardModeRef.current === true) {
+                    if (elapsed > 7.8) {
+                        p.text(`SURVIVE`, 200, 50);
+                    }
+                } else {
+                    p.text(`${timeLeft.toFixed(0)}`, 200, 50);
+                }
 
                 // "gravity"
                 if (angle > 0 || angle < 0) {
@@ -150,23 +182,54 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                         p.image(lipsR1, p.width - lipsWidth, (p.height / 4), lipsWidth, lipsHeight);
                     }
                 }
+
+                // hardmode shake effect
+                p.push();
+                if (hardModeRef.current === true && elapsed > timeTilShake) {
+                    let panicTime = elapsed - timeTilShake;
+                    let shakeIntensity = p.constrain(panicTime * 0.05, 0, 15);
+
+                    p.translate(
+                        p.random(-shakeIntensity, shakeIntensity),
+                        p.random(-shakeIntensity, shakeIntensity)
+                    );
+                }
                 
-                // game loop
+                // render game
                 drawScene(p, (angle += velocity));
 
+                p.pop();
+
+                // hardmode flashing effect
+                if (hardModeRef.current === true && elapsed > timeTilFlash) {
+                    let panicTime = elapsed - timeTilFlash;
+                    let flashSpeed = 0.01 + (panicTime * 0.002);
+                    let alpha = p.map(p.sin(p.millis() * flashSpeed * 0.01), -1, 1, 0, 80);
+
+                    p.push();
+                    p.noStroke();
+                    p.fill(255, 0, 0, alpha);
+                    p.rect(0, 0, p.width, p.height);
+                    p.pop();
+                }
+
                 // win condition
-                if(timeLeft == 0) {
+                if (timeLeft == 0) {
                     onWin(timeLeft);
                 }
 
                 // lose condition
-                if(angle > maxAngle || angle < -maxAngle) {
+                if (angle > maxAngle || angle < -maxAngle) {
                     velocity = 0; //CHANGE FALL ANGLE TO NOT BE STRAIGHT DOWN
                     drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
-                    if(drop > 170) { //REPLACE MAGIC NUM
+                    if (drop > 170) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
                         crackSound.setVolume(0.3);
                         crackSound.play();
+
+                        if (hardModeRef.current === true) {
+                            hardModeSong.stop();
+                        }
                     }
                 }
                 
@@ -202,6 +265,9 @@ const EggCanvas = ({ gameState, onLoss, onWin}) => {
                 p.bezierVertex(10, -15, 25, 20, 0, 20);
                 p.bezierVertex(-25, 20, -10, -15, 0, -15);
                 p.endShape();
+
+                // hardmode egg cracks
+                
 
                 p.pop(); // allows moving just the egg instead of entire canvas
             };
