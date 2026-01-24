@@ -35,7 +35,7 @@ const EggGame = () => {
 
     return (
         
-        <div className="egg-game-wrapper" style={{ position: 'relative', width: '400px', height: '250px' }}>
+        <div className="egg-game-wrapper" style={{ position: 'relative', width: '800px', height: '500px' }}>
 
             {/* game engine */}
             <EggCanvas
