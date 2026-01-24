@@ -7,13 +7,8 @@ import EggGame from '../components/EggGame/EggGame'
 function Home() {
   return (
     <div className="home">
-      <Header />
 
-      <GifToAscii />
-      
-      <EggGame />
-
-      </div>
+    </div>
   );
 }
 
