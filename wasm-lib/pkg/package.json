@@ -1,0 +1,15 @@
+{
+  "name": "gif-to-ascii",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "gif_to_ascii_bg.wasm",
+    "gif_to_ascii.js",
+    "gif_to_ascii.d.ts"
+  ],
+  "main": "gif_to_ascii.js",
+  "types": "gif_to_ascii.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
