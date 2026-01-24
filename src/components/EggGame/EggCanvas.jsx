@@ -15,6 +15,24 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
         hardModeRef.current = isHardMode;
     }, [isHardMode]);
 
+    // prevent browser controls interfering
+    useEffect(() => {
+        const preventDefaultScroll = (e) => {
+            if (['Space', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                    e.preventDefault();
+            }
+            if (e.keyCode === 32) {
+                    e.preventDefault();
+                }
+        };
+
+        window.addEventListener('keydown', preventDefaultScroll);
+
+        return () => {
+            window.removeEventListener('keydown', preventDefaultScroll);
+        };
+    }, []);    
+
     useEffect(() => {
         const sketch = (p) => {
 
