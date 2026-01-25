@@ -53,8 +53,8 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let blowSounds = [];
             let crackSound;
             let spacebarLock = false;
-            let hardModeSong;
             let lastWindTime = 0;
+            let flashTime = 0;
 
             // constants
             let MAX_ANGLE = 1.7;
@@ -88,7 +88,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 blowSounds[4] = p.loadSound('/assets/blow5.mp3');
                 blowSounds[5] = p.loadSound('/assets/blow6.mp3');
                 crackSound = p.loadSound('/assets/crack.mp3');
-                hardModeSong = p.loadSound('/assets/hardmode.mp3');
+                p.hardModeSong = p.loadSound('/assets/hardmode.mp3');
             };
 
             // runs once at start
@@ -121,24 +121,25 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
                     velocity = initialPush + gravity;
                     drop = 0;
+                    flashTime = 0;
 
                     // hardmode settings
                     if (hardModeRef.current === true) {
                         blowVelocity = 0.00023;
                         gravity = 0.0002;
 
-                        if (hardModeSong) {
-                            hardModeSong.setVolume(0.06);
-                            hardModeSong.play();
+                        if (p.hardModeSong) {
+                            p.hardModeSong.setVolume(0.06);
+                            p.hardModeSong.play();
                             
-                            timeLimit = hardModeSong.duration() - 12; // match game duration with song duration
+                            timeLimit = p.hardModeSong.duration() - 12; // match game duration with song duration
                         }
                     } else {
                         blowVelocity = 0.00015;
                         gravity = 0.0001;
 
-                        if (hardModeSong && hardModeSong.isPlaying()) {
-                            hardModeSong.stop();
+                        if (p.hardModeSong && p.hardModeSong.isPlaying()) {
+                            p.hardModeSong.stop();
                         }
                     }
 
@@ -258,7 +259,8 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 if (hardModeRef.current === true && elapsed > TIME_TIL_FLASH) {
                     let panicTime = elapsed - TIME_TIL_FLASH;
                     let flashSpeed = 0.01 + (panicTime * 0.002);
-                    let alpha = p.map(p.sin(p.millis() * flashSpeed * 0.01), -1, 1, 0, 80);
+                    flashTime += flashSpeed;
+                    let alpha = p.map(p.sin(flashTime * 0.5), -1, 1, 0, 80);
 
                     p.push();
                     p.noStroke();
@@ -282,7 +284,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                         crackSound.play();
 
                         if (hardModeRef.current === true) {
-                            hardModeSong.stop();
+                            p.hardModeSong.stop();
                         }
                     }
                 }
@@ -364,6 +366,10 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
         const p5Instance = new window.p5(sketch, renderRef.current);
 
         return () => {
+            if (p5Instance.hardModeSong) {
+                p5Instance.hardModeSong.stop();
+            }
+
             p5Instance.remove();
         };
     }, []);
