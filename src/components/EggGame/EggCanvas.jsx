@@ -45,6 +45,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let blowDirection = 1;
             let drop = 0;
             let initialPush = 0;
+            let fallX = 0;
             let mic;
             let startTime = 0;
             let gameActive = false;
@@ -57,12 +58,12 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let flashTime = 0;
 
             // constants
-            let MAX_ANGLE = 1.7;
+            let MAX_ANGLE = 1.4;
             let LIPS_WIDTH = 101;
             let LIPS_HEIGHT = 130;
             let TIME_TIL_FLASH = 7.8;
             let TIME_TIL_SHAKE = 90;
-            const WIND_COOLDOWN = 1000;
+            const WIND_COOLDOWN = 1300;
 
             // set up wind sprites
             let wind = {
@@ -121,6 +122,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
                     velocity = initialPush + gravity;
                     drop = 0;
+                    fallX = 0;
                     flashTime = 0;
 
                     // hardmode settings
@@ -295,8 +297,9 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
 
                 // lose condition
                 if (angle > MAX_ANGLE || angle < -MAX_ANGLE) {
-                    velocity = 0; //CHANGE FALL ANGLE TO NOT BE STRAIGHT DOWN
-                    drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
+                    velocity = 0;
+                    drop += (drop * (gravity + .13) + 1);
+                    fallX += (angle);
                     if (drop > 340) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
                         pianoCrash.setVolume(0.3);
@@ -327,7 +330,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 p.line(0, 0, 0, 380);
 
                 // draw egg
-                p.translate(velocity, drop); // if egg falls
+                p.translate(fallX, drop); // if egg falls
                 p.rotate(angle);
                 p.translate(0, -40); // move axis (entire canvas) to bottom of egg
                 p.stroke(0);
