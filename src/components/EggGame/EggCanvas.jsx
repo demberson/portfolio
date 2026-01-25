@@ -51,7 +51,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let lipsL, lipsR, windL, windR;
             let isBlowing = false;
             let blowSounds = [];
-            let crackSound;
+            let pianoCrash;
             let spacebarLock = false;
             let lastWindTime = 0;
             let flashTime = 0;
@@ -87,7 +87,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 blowSounds[3] = p.loadSound('/assets/blow4.mp3');
                 blowSounds[4] = p.loadSound('/assets/blow5.mp3');
                 blowSounds[5] = p.loadSound('/assets/blow6.mp3');
-                crackSound = p.loadSound('/assets/crack.mp3');
+                pianoCrash = p.loadSound('/assets/piano-crash.mp3');
                 p.hardModeSong = p.loadSound('/assets/hardmode.mp3');
             };
 
@@ -299,8 +299,8 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     drop += (drop * (gravity + .13) + 1); //REPLACE MAGIC NUM
                     if (drop > 340) { //REPLACE MAGIC NUM
                         onLoss(timeLeft);
-                        crackSound.setVolume(0.3);
-                        crackSound.play();
+                        pianoCrash.setVolume(0.3);
+                        pianoCrash.play();
 
                         if (hardModeRef.current === true) {
                             p.hardModeSong.stop();
