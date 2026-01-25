@@ -101,13 +101,13 @@ const GifToAscii = () => {
                 <div style={{
                     whiteSpace: 'pre',
                     fontFamily: 'monospace',
-                    lineHeight: '0.6em',
+                    lineHeight: '1em',
+                    fontWeight: 'bold',
                     fontSize: '8px',
                     marginTop: '20px',
                     color: 'black',
                     backgroundColor: 'white',
-                    display: 'inline-block',
-                    padding: '1px'
+                    display: 'inline-block'
                 }}>
                     {frames[currentFrameIndex]}
                 </div>
