@@ -11,8 +11,15 @@ const EggGame = () => {
 
     // preload image
     useEffect(() => {
-        const img = new Image();
-        img.src = "/assets/fell-off.png";
+        const images = [
+            "/assets/fell-off.png",
+            "/assets/fell-off-hm.png"
+        ];
+        
+        images.forEach((path) => {
+            const img = new Image();
+            img.src = path;
+        })
     }, []);
 
     // handlers
@@ -48,34 +55,70 @@ const EggGame = () => {
             {/* ui */}
             {gameState === 'MENU' && (
                 <div className="overlay">
-                    <button onClick={handleStart}>Start</button>
 
-                    
+                    <div className="overlay-left">
+                        <h3><u>Controls</u></h3>
+                        <div className="controls-list">
+                            <p>Use your MICROPHONE (or spacebar) to blow the egg</p>
+                            <p>LEFT and RIGHT arrow keys change which side you blow from</p>
+                        </div>
+                    </div>
+
+                    <div className="overlay-right">
+                        <h1>Egg Game</h1>
+                        <button onClick={handleStart}>Play</button>
+                    </div>
+
                 </div>
             )}
 
             {gameState === 'GAME_OVER' && (
                 <div className="overlay">
-                    <h2>game over</h2>
-                    <button onClick={handleStart}>Retry</button>
+
+                    <div className="overlay-left">
+                        <p className="game-over-text">
+                            {"h o w   c o u l d   y o u . . .".split('').map((char, index) => (
+                                <span
+                                    key={index}
+                                    className="jitter-char"
+                                    style={{
+                                        animationDelay: `-${Math.random()}s`,
+                                        display: 'inline-block'
+                                    }}
+                                >
+                                    {char === ' ' ? '\u00A0' : char}
+                                </span>
+                            ))}
+                        </p>
+                    </div>
+
+                    <div className="overlay-right">
+                        <button onClick={handleStart}>try again...</button>
+                    </div>
                 </div>
             )}
 
             {gameState === 'VICTORY' && (
                 <div className="overlay">
-                    <img
-                        src="/assets/fell-off.png"
-                        alt="someone told me i fell off"
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            zIndex: 0, // put behind button
-                            opacity: 0.8
-                        }}
-                    />
-                    <button onClick={handleStart}>Play Again</button>
+
+                    <div className="overlay-left">
+                        <img
+                            src={isHardMode ? "/assets/fell-off-hm.png" : "/assets/fell-off.png"}
+                            alt="someone told me i fell off"
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '25%',
+                                transform: 'translate(-50%, -50%)',
+                                zIndex: 0 // put behind button
+                            }}
+                        />
+                    </div>
+
+                    <div className="overlay-right">
+                        <h1>Well done!</h1>
+                        <button onClick={handleStart}>Play Again</button>
+                    </div>
                 </div>
             )}
 

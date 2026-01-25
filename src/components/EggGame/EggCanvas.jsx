@@ -255,6 +255,25 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
 
                 p.pop();
 
+                // wind blowing effect
+                if (wind.active && wind.currentImg) {
+                    wind.x += 5 * wind.direction;
+                    wind.alpha -= 8;
+
+                    p.push();
+                    p.tint(255, wind.alpha);
+                    p.imageMode(p.CENTER);
+
+                    p.image(wind.currentImg, wind.x, wind.y, 195, 91);
+
+                    p.noTint();
+                    p.pop();
+
+                    if(wind.alpha <= 0) {
+                        wind.active = false;
+                    }
+                }
+
                 // hardmode flashing effect
                 if (hardModeRef.current === true && elapsed > TIME_TIL_FLASH) {
                     let panicTime = elapsed - TIME_TIL_FLASH;
@@ -287,27 +306,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                             p.hardModeSong.stop();
                         }
                     }
-                }
-
-                // wind blowing effect
-                if (wind.active && wind.currentImg) {
-                    wind.x += 5 * wind.direction;
-                    wind.alpha -= 8;
-
-                    p.push();
-                    p.tint(255, wind.alpha);
-                    p.imageMode(p.CENTER);
-
-                    p.image(wind.currentImg, wind.x, wind.y, 195, 91);
-
-                    p.noTint();
-                    p.pop();
-
-                    if(wind.alpha <= 0) {
-                        wind.active = false;
-                    }
-                }
-                
+                }     
             };
 
             // prevent normal browser controls from interfering
@@ -365,6 +364,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
 
         const p5Instance = new window.p5(sketch, renderRef.current);
 
+        // end song if leaving page
         return () => {
             if (p5Instance.hardModeSong) {
                 p5Instance.hardModeSong.stop();
