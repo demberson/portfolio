@@ -10,8 +10,8 @@
 }
 
 .egg-game-wrapper canvas {
-    width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: auto !important;
     display: block;
 }
 

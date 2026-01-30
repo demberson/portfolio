@@ -122,6 +122,9 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     // start mic on first interaction
                     if (mic && !micStarted) {
                         p.userStartAudio();
+                        if (p.getAudioContext().state !== 'running') {
+                            p.getAudioContext().resume();
+                        }
                         mic.start();
                         micStarted = true;
                     }
@@ -231,7 +234,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
                 if (mic) {
                     let vol = mic.getLevel();
-                    if (vol > 0.15) {
+                    if (vol > 0.1) {
                         velocity += (blowVelocity * blowDirection);
                         isBlowing = true;
                     }
