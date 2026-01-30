@@ -8,6 +8,7 @@ const EggGame = () => {
     const [gameState, setGameState] = useState('MENU');
     const [finalTime, setFinalTime] = useState(0);
     const [isHardMode, setIsHardMode] = useState(false);
+    const [wonOnHardMode, setWonOnHardMode] = useState(false);
 
     // preload image
     useEffect(() => {
@@ -38,6 +39,7 @@ const EggGame = () => {
     const handleWin = (time) => {
         setFinalTime(time);
         setGameState('VICTORY');
+        setWonOnHardMode(isHardMode);
     };
 
     return (
@@ -57,9 +59,10 @@ const EggGame = () => {
                 <div className="overlay">
 
                     <div className="overlay-left">
+                        <h1>Balance the Egg!</h1>
                         <h3><u>Controls</u></h3>
                         <div className="controls-list">
-                            <p>Use your MICROPHONE (or spacebar) to blow the egg</p>
+                            <p>Use your MICROPHONE (or spacebar) to blow on the egg</p>
                             <p>LEFT and RIGHT arrow keys change which side you blow from</p>
                         </div>
                     </div>
@@ -93,7 +96,7 @@ const EggGame = () => {
                     </div>
 
                     <div className="overlay-right">
-                        <button onClick={handleStart}>try again...</button>
+                        <button onClick={handleStart}>Try Again</button>
                     </div>
                 </div>
             )}
@@ -103,7 +106,7 @@ const EggGame = () => {
 
                     <div className="overlay-left">
                         <img
-                            src={isHardMode ? "/assets/fell-off-hm.png" : "/assets/fell-off.png"}
+                            src={wonOnHardMode ? "/assets/fell-off-hm.png" : "/assets/fell-off.png"}
                             alt="someone told me i fell off"
                             style={{
                                 position: 'absolute',

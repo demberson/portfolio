@@ -49,13 +49,15 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let mic;
             let startTime = 0;
             let gameActive = false;
-            let lipsL, lipsR, windL, windR;
+            let lipsL, lipsR, windL, windR, gameBackground;
             let isBlowing = false;
             let blowSounds = [];
             let pianoCrash;
             let spacebarLock = false;
             let lastWindTime = 0;
             let flashTime = 0;
+            let leftLipPos = 0;
+            let rightLipPos = 0;
 
             // constants
             let MAX_ANGLE = 1.4;
@@ -98,6 +100,8 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 p.textAlign(p.CENTER);
                 p.textSize(40);
 
+                gameBackground = p.loadImage('/assets/egg-bg.png');
+
                 // initialize mic
                 mic = new window.p5.AudioIn();
                 mic.start();
@@ -106,6 +110,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             // draws 60 times per second
             p.draw = () => {
                 p.background(255);
+                p.image(gameBackground, 0, 0, p.width, p.height);
 
                 // check game state
                 if (gameStateRef.current !== 'PLAYING') {
@@ -151,15 +156,18 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 // timer
                 let elapsed = (p.millis() - startTime) / 1000;
                 let timeLeft = Math.max(0, timeLimit - elapsed);
-                p.fill(0);
-                p.noStroke();
+                p.push();
+                p.stroke(0);
+                p.strokeWeight(3);
+                p.fill(255);
                 if (hardModeRef.current === true) { // if hardmode, replace timer
                     if (elapsed > TIME_TIL_FLASH) {
                         p.text(`SURVIVE`, 400, 100);
                     }
                 } else {
-                    p.text(`${timeLeft.toFixed(0)}`, 400, 100);
+                    p.text(`${timeLeft.toFixed(1)}`, 400, 100);
                 }
+                p.pop();
 
                 // "gravity"
                 if (angle > 0 || angle < 0) {
@@ -201,42 +209,40 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     }
                 }
 
-                // draw lips
-                if (blowDirection == 1) { // left side
-                    if (isBlowing) {
-                        p.image(lipsL, 0, (p.height / 4), LIPS_WIDTH, LIPS_HEIGHT);
+                // lips
+                let targetLeft = blowDirection === 1 ? 1 : 0;
+                let targetRight = blowDirection === -1 ? 1 : 0;
 
-                        if (p.millis() - lastWindTime > WIND_COOLDOWN) {
-                            lastWindTime = p.millis();
-                            wind.active = true;
-                            wind.alpha = 255;
+                leftLipPos = p.lerp(leftLipPos, targetLeft, 0.6);
+                rightLipPos = p.lerp(rightLipPos, targetRight, 0.6);
 
-                            wind.direction = blowDirection;
-                            wind.currentImg = windL;
-                            wind.x = 0 + 160;
-                            wind.y = (p.height / 4) + 40;
-
-                        }
-                    } else {
-                        p.image(lipsL, 0, (p.height / 4), LIPS_WIDTH, LIPS_HEIGHT);
-                    }
+                let leftX = p.map(leftLipPos, 0, 1, -LIPS_WIDTH, 0); // left
+                if (leftLipPos > 0.01) {
+                    p.image(lipsL, leftX, p.height / 4, LIPS_WIDTH, LIPS_HEIGHT);
                 }
-                if (blowDirection == -1) { // right side
-                    if (isBlowing) {
-                        p.image(lipsR, p.width - LIPS_WIDTH, (p.height / 4), LIPS_WIDTH, LIPS_HEIGHT);
 
-                        if (p.millis() - lastWindTime > WIND_COOLDOWN) {
-                            lastWindTime = p.millis();
-                            wind.active = true;
-                            wind.alpha = 255;
+                let rightX = p.map(rightLipPos, 0, 1, p.width, p.width - LIPS_WIDTH); // right
+                if (rightLipPos > 0.01) {
+                    p.image(lipsR, rightX, p.height / 4, LIPS_WIDTH, LIPS_HEIGHT);
+                }
 
-                            wind.direction = blowDirection;
+                // wind blowing effect
+                if (isBlowing) {
+                    if (p.millis() - lastWindTime > WIND_COOLDOWN) {
+                        lastWindTime = p.millis();
+                        wind.active = true;
+                        wind.alpha = 255;
+                        wind.direction = blowDirection;
+
+                        if (blowDirection === 1) {
+                            wind.currentImg = windL;
+                            wind.x = 160;
+                            wind.y = (p.height / 4) + 40;
+                        } else {
                             wind.currentImg = windR;
                             wind.x = p.width - 160;
                             wind.y = (p.height / 4) + 40;
                         }
-                    } else {
-                        p.image(lipsR, p.width - LIPS_WIDTH, (p.height / 4), LIPS_WIDTH, LIPS_HEIGHT);
                     }
                 }
 
@@ -300,7 +306,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     velocity = 0;
                     drop += (drop * (gravity + .13) + 1);
                     fallX += (angle);
-                    if (drop > 340) { //REPLACE MAGIC NUM
+                    if (drop > 340) {
                         onLoss(timeLeft);
                         pianoCrash.setVolume(0.3);
                         pianoCrash.play();
@@ -321,13 +327,36 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
 
             const drawScene = (p, angle, timeLeft) => {
                 p.push();
-
                 p.translate(p.width / 2, p.height / 2 - 10);
 
                 // draw wall
+                let wallW = 20;
+                let wallH = 300;
+                let wallY = p.height / 4 + 25; 
+                let brickH = 22;
+                let topEdge = wallY - (wallH / 2);
+                let bottomEdge = wallY + (wallH / 2);
+                let rowCount = 0;
+
+                p.rectMode(p.CENTER);
+
                 p.stroke(0);
-                p.strokeWeight(10); // wall thickness
-                p.line(0, 0, 0, 380);
+                p.strokeWeight(2);
+                p.fill(178, 34, 34);
+                p.rect(0, wallY, wallW, wallH); // base rectangle
+
+                p. stroke(130);
+                p.strokeWeight(2);
+                for (let y = topEdge; y < bottomEdge; y += brickH) { // brick pattern
+                    if (y > topEdge) {
+                        p.line(-wallW / 2, y, wallW / 2, y);
+                    }
+                    if (rowCount % 2 !== 0) {
+                        let nextY = Math.min(y + brickH, bottomEdge);
+                        p.line(0, y, 0, nextY);
+                    }
+                    rowCount++;
+                }
 
                 // draw egg
                 p.translate(fallX, drop); // if egg falls
