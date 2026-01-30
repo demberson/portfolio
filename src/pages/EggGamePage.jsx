@@ -6,6 +6,7 @@ const EggGamePage = () => {
   return (
     <div className="page-container">
         <EggGame />
+        <p>*Microphone will not work on the Firefox mobile browser</p>
     </div>
   );
 };
