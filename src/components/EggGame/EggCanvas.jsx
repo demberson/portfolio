@@ -45,6 +45,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let blowDirection = 1;
             let drop = 0;
             let initialPush = 0;
+            let hasLost = false;
             let fallX = 0;
             let mic;
             let startTime = 0;
@@ -153,6 +154,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 // startup
                 if (!gameActive) {
                     startTime = p.millis();
+                    hasLost = false;
                     timeLimit = 20;
                     angle = 0;
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
@@ -205,38 +207,44 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     velocity += (angle * gravity);
                 }
 
+                // lose condition
+                if (angle > MAX_ANGLE || angle < -MAX_ANGLE) {
+                    hasLost = true;
+                }
                 // player controls
-                isBlowing = false;
+                if (!hasLost) {
+                    isBlowing = false;
 
-                if (p.keyIsDown(p.LEFT_ARROW)) {
-                    blowDirection = 1;
-                }
-                if (p.keyIsDown(p.RIGHT_ARROW)) {
-                    blowDirection = -1;
-                }
-                if (p.keyIsDown(32)) { // spacebar
-                    velocity += (blowVelocity * blowDirection);
-                    isBlowing = true;
-
-                    // play blowing SFX if not using mic
-                    if (spacebarLock === false) { // only play one sound each spacebar press
-                        let isSoundActive = blowSounds.some(s => s.isPlaying());
-                        if(!isSoundActive) {
-                            let randomSound = p.random(blowSounds);
-                            randomSound.setVolume(0.2);
-                            randomSound.play();
-                        }
-                        spacebarLock = true;
+                    if (p.keyIsDown(p.LEFT_ARROW)) {
+                        blowDirection = 1;
                     }
-                }
-                else {
-                    spacebarLock = false;
-                }
-                if (mic) {
-                    let vol = mic.getLevel();
-                    if (vol > 0.05) {
+                    if (p.keyIsDown(p.RIGHT_ARROW)) {
+                        blowDirection = -1;
+                    }
+                    if (p.keyIsDown(32)) { // spacebar
                         velocity += (blowVelocity * blowDirection);
                         isBlowing = true;
+
+                        // play blowing SFX if not using mic
+                        if (spacebarLock === false) { // only play one sound each spacebar press
+                            let isSoundActive = blowSounds.some(s => s.isPlaying());
+                            if(!isSoundActive) {
+                                let randomSound = p.random(blowSounds);
+                                randomSound.setVolume(0.2);
+                                randomSound.play();
+                            }
+                            spacebarLock = true;
+                        }
+                    }
+                    else {
+                        spacebarLock = false;
+                    }
+                    if (mic) {
+                        let vol = mic.getLevel();
+                        if (vol > 0.05) {
+                            velocity += (blowVelocity * blowDirection);
+                            isBlowing = true;
+                        }
                     }
                 }
 
@@ -333,7 +341,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
 
                 // lose condition
-                if (angle > MAX_ANGLE || angle < -MAX_ANGLE) {
+                if (hasLost) {
                     velocity = 0;
                     drop += (drop * (gravity + .13) + 1);
                     fallX += (angle);
