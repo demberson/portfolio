@@ -68,7 +68,6 @@ const EggGame = () => {
                     </div>
 
                     <div className="overlay-right">
-                        <h1>Egg Game</h1>
                         <button onClick={handleStart}>Play</button>
                     </div>
 
