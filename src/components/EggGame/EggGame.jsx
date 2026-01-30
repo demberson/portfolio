@@ -9,6 +9,14 @@ const EggGame = () => {
     const [finalTime, setFinalTime] = useState(0);
     const [isHardMode, setIsHardMode] = useState(false);
     const [wonOnHardMode, setWonOnHardMode] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    // check if on mobile device
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // preload image
     useEffect(() => {
@@ -62,8 +70,17 @@ const EggGame = () => {
                         <h1>Balance the Egg!</h1>
                         <h3><u>Controls</u></h3>
                         <div className="controls-list">
-                            <p>Use your MICROPHONE (or spacebar) to blow on the egg</p>
-                            <p>LEFT and RIGHT arrow keys change which side you blow from</p>
+                            {isMobile ? (
+                                <>
+                                    <p>Use your MICROPHONE to blow on the egg</p>
+                                    <p>TAP on the side of the screen you want to blow from</p>
+                                </>
+                            ) : (
+                                <>
+                                    <p>Use your MICROPHONE (or spacebar) to blow on the egg</p>
+                                    <p>LEFT and RIGHT arrow keys change which side you blow from</p>
+                                </>
+                            )}
                         </div>
                     </div>
 

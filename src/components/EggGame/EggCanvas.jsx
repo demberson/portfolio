@@ -234,7 +234,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
                 if (mic) {
                     let vol = mic.getLevel();
-                    if (vol > 0.1) {
+                    if (vol > 0.05) {
                         velocity += (blowVelocity * blowDirection);
                         isBlowing = true;
                     }
