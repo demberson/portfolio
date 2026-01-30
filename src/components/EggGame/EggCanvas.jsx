@@ -103,8 +103,36 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 gameBackground = p.loadImage('/assets/egg-bg.png');
 
                 // initialize mic
-                mic = new window.p5.AudioIn();
-                mic.start();
+                try {
+                    mic = new window.p5.AudioIn();
+                } catch(e) {
+                    console.log("Mic not supported");
+                }
+            };
+
+            // track if mic is enabled, necessary for mobile
+            let micStarted = false;
+
+            // click/touch controls for mobile
+            p.mousePressed = () => {
+
+                // check if inside canvas
+                if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
+
+                    // start mic on first interaction
+                    if (mic && !micStarted) {
+                        p.userStartAudio();
+                        mic.start();
+                        micStarted = true;
+                    }
+
+                    if (p.mouseX < p.width / 2) {
+                        blowDirection = 1;
+                    } else {
+                        blowDirection = -1;
+                    }
+                }
+                return true;
             };
 
             // draws 60 times per second
