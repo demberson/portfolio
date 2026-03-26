@@ -134,12 +134,33 @@
     z-index: 1;
 }
 
+.experience-card-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px 20px;
+    align-items: start;
+}
+
+.experience-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.experience-logo {
+    width: 104px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
 .experience-card-top {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .experience-card h3 {
@@ -202,6 +223,27 @@
 
     .experience-list {
         grid-template-columns: 1fr;
+    }
+
+    .experience-card-inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .experience-card-main {
+        width: 100%;
+        align-items: center;
+    }
+
+    .experience-card-top {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .experience-period {
+        white-space: normal;
     }
 
     .skills-cloud {

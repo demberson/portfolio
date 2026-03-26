@@ -52,17 +52,26 @@ function Home() {
           <h2 className="section-title">Experience</h2>
           <div className="experience-list">
             <article className="experience-card reveal-from-side">
-              <div className="experience-card-top">
-                <h3>The Global Career Accelerator</h3>
-                <span className="experience-period">Summer 2024</span>
+              <div className="experience-card-inner">
+                <img
+                  src="/assets/global-career-accelerator-logo.png"
+                  alt="The Global Career Accelerator"
+                  className="experience-logo"
+                />
+                <div className="experience-card-main">
+                  <div className="experience-card-top">
+                    <h3>The Global Career Accelerator</h3>
+                    <span className="experience-period">Summer 2024</span>
+                  </div>
+                  <p>
+                    A participant in a professional training program partnered with Intel and the GRAMMYs where I analyzed
+                    real-world data challenges. My duties included using SQL and Tableau to produce data-driven recommendations
+                    for an Intel-sponsored project. Additionally, I analyzed audience behavior and A/B testing data to recommend
+                    specific site improvements for Grammy.com. The role involved collaborating within an intercultural team to
+                    develop data visualizations and share technical insights across the group.
+                  </p>
+                </div>
               </div>
-              <p>
-                A participant in a professional training program partnered with Intel and the GRAMMYs where I analyzed
-                real-world data challenges. My duties included using SQL and Tableau to produce data-driven recommendations
-                for an Intel-sponsored project. Additionally, I analyzed audience behavior and A/B testing data to recommend
-                specific site improvements for Grammy.com. The role involved collaborating within an intercultural team to
-                develop data visualizations and share technical insights across the group.
-              </p>
             </article>
           </div>
         </div>
@@ -70,22 +79,22 @@ function Home() {
 
       <section className="skills-section">
         <div className="home-content-width">
-          <h2 className="section-title">Skills Cloud</h2>
+          <h2 className="section-title">Skills</h2>
           <div className="skills-cloud reveal-from-side">
-            <span class="skill-chip">C++</span>
-            <span class="skill-chip">Java</span>
-            <span class="skill-chip">Python</span>
-            <span class="skill-chip">JavaScript</span>
-            <span class="skill-chip">React</span>
-            <span class="skill-chip">HTML/CSS</span>
-            <span class="skill-chip">SQL</span>
-            <span class="skill-chip">Git</span>
-            <span class="skill-chip">REST APIs</span>
-            <span class="skill-chip">OOP</span>
-            <span class="skill-chip">Data Structures</span>
-            <span class="skill-chip">Algorithms</span>
-            <span class="skill-chip">Tableau</span>
-            <span class="skill-chip">p5.js</span>
+            <span className="skill-chip">C++</span>
+            <span className="skill-chip">Java</span>
+            <span className="skill-chip">Python</span>
+            <span className="skill-chip">JavaScript</span>
+            <span className="skill-chip">React</span>
+            <span className="skill-chip">HTML/CSS</span>
+            <span className="skill-chip">SQL</span>
+            <span className="skill-chip">Git</span>
+            <span className="skill-chip">REST APIs</span>
+            <span className="skill-chip">OOP</span>
+            <span className="skill-chip">Data Structures</span>
+            <span className="skill-chip">Algorithms</span>
+            <span className="skill-chip">Tableau</span>
+            <span className="skill-chip">p5.js</span>
           </div>
         </div>
       </section>
