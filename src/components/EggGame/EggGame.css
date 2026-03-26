@@ -119,31 +119,27 @@
 
     .overlay {
         flex-direction: column;
-        /* FIX 1: Allow scrolling if content is too tall */
         overflow-y: auto; 
-        align-items: center; /* Center everything */
+        align-items: center;
     }
 
     .overlay-left, .overlay-right {
         width: 100%;
-        /* Remove 'flex: 1' so they don't fight for space. 
-           Let them be as tall as they need to be. */
         flex: auto; 
         
-        padding: 10px; /* Reduced from 15px to save space */
+        padding: 10px;
         border-right: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Reduce Header Size */
     .overlay h1 {
-        font-size: 1.4rem; /* Smaller to fit */
+        font-size: 1.4rem;
         margin: 5px 0;
     }
 
     .controls-list p {
         font-size: 0.85rem;
-        margin: 2px 0; /* Tighter spacing */
+        margin: 2px 0;
         line-height: 1.2;
     }
 
@@ -159,14 +155,12 @@
         margin: 0 1px;
     }
 
-    /* FIX 2: Apply this to the IMAGE, not the .overlay-left container */
     .overlay-left img {
-        max-width: 40% !important; /* Make image smaller so it doesn't hog space */
+        max-width: 40% !important;
         height: auto;
         margin-bottom: 10px;
     }
     
-    /* Ensure the button is visible and has space */
     .overlay-right {
         padding-bottom: 20px;
     }
