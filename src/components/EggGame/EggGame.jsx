@@ -118,19 +118,12 @@ const EggGame = () => {
             )}
 
             {gameState === 'VICTORY' && (
-                <div className="overlay">
-
+                <div className="overlay overlay-victory">
                     <div className="overlay-left">
                         <img
                             src={wonOnHardMode ? "/assets/fell-off-hm.png" : "/assets/fell-off.png"}
-                            alt="someone told me i fell off"
-                            style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '25%',
-                                transform: 'translate(-50%, -50%)',
-                                zIndex: 0 // put behind button
-                            }}
+                            alt="victory"
+                            className="victory-image" 
                         />
                     </div>
 
