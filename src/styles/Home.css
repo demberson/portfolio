@@ -205,16 +205,33 @@
 @media (max-width: 768px) {
     .bio-section {
         justify-content: center;
+        padding: 48px 0;
+    }
+
+    .home-content-width {
+        width: 100%;
+        max-width: 100%;
     }
 
     .bio-wrapper {
         flex-direction: column;
         text-align: center;
         gap: 30px;
+        width: 100%;
+        padding: 22px 16px;
     }
 
     .section-title {
         text-align: center;
+    }
+
+    .experience-section,
+    .skills-section {
+        padding: 16px 0 28px;
+    }
+
+    .experience-card {
+        padding: 18px 14px;
     }
 
     .reveal-from-side {

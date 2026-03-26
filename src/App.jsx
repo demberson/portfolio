@@ -9,14 +9,16 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/gif-to-ascii" element={<GifToAsciiPage />} />
-            <Route path="/egg-game" element={<EggGamePage />} />
-          </Routes>
-        </main>
+        <div className="app-frame">
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/gif-to-ascii" element={<GifToAsciiPage />} />
+              <Route path="/egg-game" element={<EggGamePage />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </Router>
   );
