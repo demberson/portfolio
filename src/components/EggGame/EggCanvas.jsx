@@ -46,6 +46,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let drop = 0;
             let initialPush = 0;
             let hasLost = false;
+            let hasWon = false;
             let fallX = 0;
             let mic;
             let startTime = 0;
@@ -54,6 +55,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
             let isBlowing = false;
             let blowSounds = [];
             let pianoCrash;
+            let winGameSound;
             let spacebarLock = false;
             let lastWindTime = 0;
             let flashTime = 0;
@@ -92,6 +94,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 blowSounds[4] = p.loadSound('/assets/blow5.mp3');
                 blowSounds[5] = p.loadSound('/assets/blow6.mp3');
                 pianoCrash = p.loadSound('/assets/piano-crash.mp3');
+                winGameSound = p.loadSound('/assets/win-game.mp3');
                 p.hardModeSong = p.loadSound('/assets/hardmode.mp3');
             };
 
@@ -155,6 +158,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 if (!gameActive) {
                     startTime = p.millis();
                     hasLost = false;
+                    hasWon = false;
                     timeLimit = 20;
                     angle = 0;
                     initialPush = (p.random([1, -1])) * (gravity * 2); // push egg in random direction at start
@@ -241,7 +245,7 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                     }
                     if (mic) {
                         let vol = mic.getLevel();
-                        if (vol > 0.05) {
+                        if (vol > 0.03) {
                             velocity += (blowVelocity * blowDirection);
                             isBlowing = true;
                         }
@@ -336,7 +340,15 @@ const EggCanvas = ({ gameState, onLoss, onWin, isHardMode}) => {
                 }
 
                 // win condition
-                if (timeLeft == 0) {
+                if (timeLeft === 0 && !hasWon) {
+                    hasWon = true;
+                    if (winGameSound) {
+                        winGameSound.setVolume(0.3);
+                        winGameSound.play();
+                    }
+                    if (hardModeRef.current === true && p.hardModeSong) {
+                        p.hardModeSong.stop();
+                    }
                     onWin(timeLeft);
                 }
 
