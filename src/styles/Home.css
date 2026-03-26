@@ -1,7 +1,218 @@
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding-top: 80px;
+.bio-section {
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.bio-section::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    left: max(20px, calc(50% - 700px));
+    top: 50%;
+    transform: translateY(-50%);
+    background: radial-gradient(circle, rgba(31, 41, 55, 0.55) 0%, rgba(26, 26, 26, 0) 70%);
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bio-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    width: min(1400px, calc(100% - 40px));
+    padding: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 18px;
+    box-shadow: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    cursor: default;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.bio-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background:
+        radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.48) 40%, rgba(0, 0, 0, 0) 72%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.68) 22%, rgba(0, 0, 0, 0.68) 78%, rgba(0, 0, 0, 0) 100%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.bio-wrapper > * {
+    position: relative;
+    z-index: 1;
+}
+
+.bio-image img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.bio-content p {
+    color: #ffffff;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.reveal-from-side {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.reveal-from-side.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.home-content-width {
+    width: min(1400px, calc(100% - 40px));
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #ffffff;
+    margin: 0 0 24px;
+    text-align: left;
+}
+
+.experience-section,
+.skills-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 20px 40px;
+}
+
+.experience-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.experience-card {
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.experience-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background:
+        radial-gradient(140% 140% at 50% 50%, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0) 72%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 22%, rgba(0, 0, 0, 0.9) 78%, rgba(0, 0, 0, 0) 100%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.experience-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.experience-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.experience-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+.experience-period {
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.experience-card p {
+    margin: 0;
+    color: #e5e7eb;
+    line-height: 1.65;
+}
+
+.skills-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.skill-chip {
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.45));
+    color: #ffffff;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+}
+
+@media (max-width: 768px) {
+    .bio-section {
+        justify-content: center;
+    }
+
+    .bio-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .section-title {
+        text-align: center;
+    }
+
+    .reveal-from-side {
+        transform: translateX(-30px);
+    }
+
+    .experience-list {
+        grid-template-columns: 1fr;
+    }
+
+    .skills-cloud {
+        justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal-from-side {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
 }
