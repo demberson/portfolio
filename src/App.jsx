@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import GifToAsciiPage from './pages/GifToAsciiPage';
 import EggGamePage from './pages/EggGamePage';
+import UncannyFacePage from './pages/UncannyFacePage';
 import './styles/App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/gif-to-ascii" element={<GifToAsciiPage />} />
               <Route path="/egg-game" element={<EggGamePage />} />
+              <Route path="/uncanny-face-detector" element={<UncannyFacePage />} />
             </Routes>
           </main>
         </div>

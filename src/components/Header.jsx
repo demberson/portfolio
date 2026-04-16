@@ -27,6 +27,9 @@ function Header() {
           <Link to="/egg-game" className="nav-button">
             Egg Game
           </Link>
+          <Link to="/uncanny-face-detector" className="nav-button">
+            Uncanny Face Filter
+          </Link>
         </nav>
 
       </div>

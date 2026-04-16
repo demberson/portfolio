@@ -27,3 +27,18 @@ dist-ssr
 target/
 **/*.rs.bk
 wasm-lib/pkg/
+
+# Python artifacts
+uncanny-api/.venv/
+uncanny-api/__pycache__/
+uncanny-api/*.py[cod]
+uncanny-api/.env
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Trained model artifacts
+uncanny-api/models/*.pkl
+!uncanny-api/models/.gitkeep
