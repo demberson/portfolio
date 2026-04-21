@@ -74,12 +74,10 @@ function UncannyFacePage() {
   return (
     <section className="uncanny-page">
       <div className="uncanny-container">
-        <h2>Uncanny Face Filter</h2>
-
         <div className="uncanny-controls">
           <input type="file" accept="image/*" onChange={onFileSelect} />
           <button type="button" onClick={runDetector} disabled={isLoading || !selectedFile}>
-            {isLoading ? 'Processing...' : 'Generate Uncanny Output'}
+            {isLoading ? 'Processing...' : 'Generate Output'}
           </button>
         </div>
 
@@ -90,20 +88,26 @@ function UncannyFacePage() {
             <h3>Input</h3>
             {previewUrl ? (
               <img src={previewUrl} alt="Uploaded preview" />
-            ) : (
-              <p className="uncanny-placeholder">Choose an image to preview it here.</p>
-            )}
+            ) : null}
           </article>
 
           <article className="uncanny-result-card">
             <h3>Output</h3>
             {outputImage ? (
               <img src={outputImage} alt="Uncanny face output" />
-            ) : (
-              <p className="uncanny-placeholder">Run the detector to see the transformed image.</p>
-            )}
+            ) : null}
           </article>
         </div>
+
+        <article className="uncanny-info-box">
+          <h2>How this filter works</h2>
+          <p>
+            This project uses MTCNN to detect and align a face, then normalizes the cropped region to
+            grayscale at a fixed resolution. The uncanny effect comes from a PCA Eigenface pipeline trained
+            on LFW: instead of reconstructing with enough components for fidelity, I intentionally use a small
+            top-K subset so high-frequency facial detail is lost.
+          </p>
+        </article>
       </div>
     </section>
   );

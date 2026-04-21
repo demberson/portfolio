@@ -14,7 +14,30 @@
   gap: 18px;
 }
 
-.uncanny-container h2 {
+.uncanny-info-box {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.34);
+  padding: 16px 18px;
+}
+
+.uncanny-info-box h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+}
+
+.uncanny-info-box p {
+  margin: 0;
+  color: #d1d5db;
+  line-height: 1.55;
+}
+
+.uncanny-info-box p + p {
+  margin-top: 10px;
+}
+
+.uncanny-container > h2 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3rem);
 }
