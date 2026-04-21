@@ -12,6 +12,7 @@ from mtcnn import MTCNN
 BLUR_AMOUNT = 5
 NOISE_LEVEL = 15
 N_COMPONENTS = 80
+DETAIL_BLEND_STRENGTH = 0.28
 
 FACE_WIDTH = 37
 FACE_HEIGHT = 50
@@ -70,18 +71,20 @@ class UncannyDetector:
     # resize image back to original size
     uncanny_face = cv2.resize(reconstruction, (x2 - x1, y2 - y1))
     uncanny_face = _match_brightness(uncanny_face, face_region)
-    uncanny_face = cv2.normalize(uncanny_face, None, 0, 255, cv2.NORM_MINMAX).astype("uint8")
+    uncanny_face = np.clip(uncanny_face, 0, 255).astype("uint8")
+    uncanny_face = _reinject_detail(
+      base_face=uncanny_face,
+      reference_face=face_region,
+      strength=DETAIL_BLEND_STRENGTH,
+    )
 
     # masking
-    mask = np.zeros_like(uncanny_face)
-    center = (mask.shape[1] // 2, mask.shape[0] // 2)
-    axes = (mask.shape[1] // 2, mask.shape[0] // 2)
-    cv2.ellipse(mask, center, axes, 0, 0, 360, 255, -1)
-    # blur
-    mask = cv2.GaussianBlur(mask, (21, 21), 0) / 255.0
+    mask = _build_soft_face_mask(height=uncanny_face.shape[0], width=uncanny_face.shape[1])
 
     # create final image
-    final_face = (uncanny_face * mask + face_region * (1.0 - mask)).astype("uint8")
+    final_face = (
+      uncanny_face.astype("float32") * mask + face_region.astype("float32") * (1.0 - mask)
+    ).astype("uint8")
     final_image = gray.copy()
     final_image = cv2.GaussianBlur(final_image, (BLUR_AMOUNT, BLUR_AMOUNT), 0)
     final_image[y1:y2, x1:x2] = final_face
@@ -106,8 +109,36 @@ class UncannyDetector:
 
 def _add_grain(image: np.ndarray, intensity: int = 10) -> np.ndarray:
   h, w = image.shape
-  noise = np.random.normal(0, intensity, (h, w)).astype("uint8")
-  return cv2.add(image, noise)
+  noise = np.random.normal(0, intensity, (h, w)).astype("float32")
+  with_grain = image.astype("float32") + noise
+  return np.clip(with_grain, 0, 255).astype("uint8")
+
+
+def _build_soft_face_mask(height: int, width: int) -> np.ndarray:
+  mask = np.zeros((height, width), dtype="uint8")
+  center = (width // 2, int(height * 0.47))
+  axes = (max(1, int(width * 0.42)), max(1, int(height * 0.46)))
+  cv2.ellipse(mask, center, axes, 0, 0, 360, 255, -1)
+
+  blur_size = _odd_kernel(int(min(height, width) * 0.22), min_size=5)
+  softened = cv2.GaussianBlur(mask, (blur_size, blur_size), 0)
+  return (softened.astype("float32") / 255.0).clip(0.0, 1.0)
+
+
+def _reinject_detail(base_face: np.ndarray, reference_face: np.ndarray, strength: float) -> np.ndarray:
+  blur_size = _odd_kernel(int(min(reference_face.shape) * 0.18), min_size=5)
+  ref_float = reference_face.astype("float32")
+  low_freq = cv2.GaussianBlur(ref_float, (blur_size, blur_size), 0)
+  detail = ref_float - low_freq
+  blended = base_face.astype("float32") + (strength * detail)
+  return np.clip(blended, 0, 255).astype("uint8")
+
+
+def _odd_kernel(value: int, min_size: int = 3) -> int:
+  kernel = max(min_size, value)
+  if kernel % 2 == 0:
+    kernel += 1
+  return kernel
 
 
 def _match_brightness(source: np.ndarray, reference: np.ndarray) -> np.ndarray:
