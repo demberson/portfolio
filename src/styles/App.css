@@ -1,9 +1,97 @@
+:root {
+  --frame-max: 1400px;
+  --app-pad-x: clamp(24px, 5vw, 40px);
+  --app-pad-top: 12px;
+  --app-pad-bottom: clamp(36px, 5vw, 52px);
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: #000;
+}
+
 body {
   margin: 0;
-  background-color: #1a1a1a;
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
   width: 100%;
+}
+
+.site-backdrop,
+.site-backdrop * {
+  pointer-events: none;
+}
+
+.site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.depth-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc((100% - min(var(--frame-max), 100% - 2 * var(--app-pad-x))) / 2 + 2px);
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, #000 0%, #000 93%, transparent 100%);
+}
+
+.depth-side::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0) 10%,
+    rgba(0, 0, 0, 0) 84%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+}
+
+.depth-side-left {
+  left: 0;
+}
+
+.depth-side-right {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.depth-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 62%,
+    rgba(32, 36, 44, var(--face)) 100%
+  );
+}
+
+.depth-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background: rgba(220, 228, 238, var(--line));
+  box-shadow:
+    -1px 0 0 rgba(0, 0, 0, 0.9),
+    -6px 0 10px rgba(156, 170, 190, var(--glow));
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 4%,
+    #000 96%,
+    transparent 100%
+  );
 }
 
 #root {
@@ -12,13 +100,15 @@ body {
 }
 
 .app {
+  position: relative;
+  z-index: 1;
   width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   box-sizing: border-box;
-  padding: 12px clamp(24px, 5vw, 40px) clamp(36px, 5vw, 52px);
+  padding: var(--app-pad-top) var(--app-pad-x) var(--app-pad-bottom);
 }
 
 .app-frame {
@@ -27,11 +117,8 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
   padding: clamp(8px, 1.5vw, 14px) clamp(22px, 4.5vw, 44px) clamp(20px, 3vw, 32px);
-  background: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  background: #000;
 }
 
 main {
@@ -48,14 +135,19 @@ main {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --app-pad-x: 10px;
+    --app-pad-top: 8px;
+    --app-pad-bottom: 28px;
+  }
+
   .app {
-    padding: 8px 10px 28px;
+    padding: var(--app-pad-top) var(--app-pad-x) var(--app-pad-bottom);
   }
 
   .app-frame {
     min-height: calc(100vh - 44px);
     padding: 6px 12px 18px;
-    border-radius: 14px;
   }
 
   main {
